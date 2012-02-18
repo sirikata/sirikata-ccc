@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from nodes.models import Node, NodeGroup
-import urllib2
+import requests
 
 def index(request):
     nodes = Node.objects.all().order_by('name')
@@ -28,10 +28,10 @@ def node_command_raw(request, node_id, command_name):
     node = get_object_or_404(Node, pk=node_id)
 
     try:
-        url_response = urllib2.urlopen('http://' + node.address + '/' + command_name)
-        response = url_response.read()
-    except urllib2.URLError:
-        response = 'Error when issuing command to node'
+        r = requests.get('http://' + node.address + '/' + command_name)
+        response = r.text
+    except requests.exceptions.RequestException as e:
+        response = 'Error issuing command to node: ' + str(e)
 
     render_params = {
         'response' : response
