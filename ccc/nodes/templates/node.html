@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
 <p>Name: {{ node.name }}</p>
 <p>Address: {{ node.address }}</p>
 <p>Groups:
@@ -7,3 +11,5 @@
    {% endfor %}
   </ul>
 </p>
+
+{% endblock main_content %}
