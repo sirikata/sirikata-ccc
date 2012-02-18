@@ -1,0 +1,8 @@
+
+# Python byproducts
+*.pyc
+
+# Customized settings
+ccc/settings.py
+# Default local database
+sirikata-ccc.db
