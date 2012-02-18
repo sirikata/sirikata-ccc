@@ -1,0 +1,8 @@
+<p>Name: {{ group.name }}</p>
+<p>Nodes:
+  <ul>
+  {% for node in group.node_set.all %}
+    <li><a href="{% url nodes.views.node node.id %}">{{ node.name }}</a></li>
+  {% endfor %}
+  </ul>
+</p>

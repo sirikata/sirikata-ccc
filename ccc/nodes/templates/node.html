@@ -1,0 +1,9 @@
+<p>Name: {{ node.name }}</p>
+<p>Address: {{ node.address }}</p>
+<p>Groups:
+  <ul>
+   {% for group in node.groups.all %}
+     <li><a href="{% url nodes.views.group group.id %}">{{ group.name }}</a></li>
+   {% endfor %}
+  </ul>
+</p>

@@ -1,0 +1,9 @@
+{% if nodes %}
+    <ul>
+    {% for node in nodes %}
+        <li><a href="{% url nodes.views.node node.id %}">{{ node.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No nodes are available.</p>
+{% endif %}
