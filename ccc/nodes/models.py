@@ -17,6 +17,10 @@ class Node(models.Model):
     '''Groups this node belongs to.'''
 
 
+    def __unicode__(self):
+        return self.name
+
+
 class NodeGroup(models.Model):
     '''
     A group of Nodes. This allows you to group Nodes into categories
@@ -25,3 +29,6 @@ class NodeGroup(models.Model):
 
     name = models.CharField(max_length=256)
     '''User-friendly name for this node group'''
+
+    def __unicode__(self):
+        return self.name
