@@ -2,11 +2,19 @@
 
 {% block main_content %}
 
-{% for object in objects %}
-  <div class="row">
-    <div class="span4">{{ object }}</div>
-    <div class="span1"><a class="btn btn-danger" href="{% url nodes.views.node_disconnect_object node.id object %}">Disconnect</a></div>
+<div class="row">
+  <div class="span4">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr><td>ID</td> <td></td></tr>
+      </thead>
+      <tbody>
+        {% for object in objects %}
+        <tr> <td>{{ object }}</td> <td><a class="btn btn-danger" href="{% url nodes.views.node_disconnect_object node.id object %}">Disconnect</a></td> </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
-{% endfor %}
+</div>
 
 {% endblock main_content %}
