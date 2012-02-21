@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+{% for ioservice in context_stats.ioservices.values %}
+  <div class="row">
+    <div class="span12"><h4>{{ ioservice.name }}</h4></div>
+  </div>
+
+  <div class="row">
+    <div class="span4">
+      <table class="table table-condensed table-bordered table-striped">
+        <thead>
+          <tr> <td>Type</td> <td>Outstanding</td> <td>Latency</td> </tr>
+        </thead>
+        <tbody>
+          <tr> <td>Event Handlers</td> <td>{{ ioservice.handlers.enqueued }}</td> <td>{{ ioservice.handlers.latency }}</td> </tr>
+          <tr> <td>Timers</td> <td>{{ ioservice.timers.enqueued }}</td> <td>{{ ioservice.timers.latency }}</td> </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="span4">
+      <table class="table table-condensed table-bordered table-striped">
+        <thead>
+          <tr> <td>Tag</td> <td>Count</td> </tr>
+        </thead>
+        <tbody>
+          {% for offender in ioservice.offenders.values %}
+          <tr> <td>{{ offender.tag }}</td> <td>{{ offender.count }}</td> </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% for iostrand in ioservice.strands.values %}
+    <div class="row">
+      <div class="span11 offset1"><h5>{{ iostrand.name }}</h5></div>
+    </div>
+
+    <div class="row">
+      <div class="span4 offset1">
+        <table class="table table-condensed table-bordered table-striped">
+          <thead>
+            <tr> <td>Type</td> <td>Outstanding</td> <td>Latency</td> </tr>
+          </thead>
+          <tbody>
+            <tr> <td>Event Handlers</td> <td>{{ iostrand.handlers.enqueued }}</td> <td>{{ iostrand.handlers.latency }}</td> </tr>
+            <tr> <td>Timers</td> <td>{{ iostrand.timers.enqueued }}</td> <td>{{ iostrand.timers.latency }}</td> </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span4 offset1">
+        <table class="table table-condensed table-bordered table-striped">
+          <thead>
+            <tr> <td>Tag</td> <td>Count</td> </tr>
+          </thead>
+          <tbody>
+            {% for offender in iostrand.offenders.values %}
+            <tr> <td>{{ offender.tag }}</td> <td>{{ offender.count }}</td> </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endfor %}
+{% endfor %}
+
+{% endblock main_content %}

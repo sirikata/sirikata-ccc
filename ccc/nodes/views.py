@@ -86,6 +86,26 @@ def node_disconnect_object(request, node_id, obj_id):
     # Use a notification to indicate success after redirect?
     return redirect('ccc-nodes-node-objects', node_id=node_id)
 
+
+def node_debug(request, node_id):
+    '''
+    List various debug info collected from the node.
+    '''
+    node = get_object_or_404(Node, pk=node_id)
+
+    context_stats = run_node_command(node, "context.report-all-stats")
+
+    render_params = {
+        'node' : node,
+        'context_stats' : context_stats
+        }
+    return render_to_response(
+        'debug.html', render_params,
+        context_instance=RequestContext(request)
+        )
+
+
+
 def group(request, group_id):
     group = get_object_or_404(NodeGroup, pk=group_id)
     render_params = {
