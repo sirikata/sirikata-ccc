@@ -2,7 +2,7 @@
 
 {% block main_content %}
 
-{% for ioservice in context_stats.ioservices.values %}
+{% for ioservice in context_stats.ioservices %}
   <div class="row">
     <div class="span12"><h4>{{ ioservice.name }}</h4></div>
   </div>
@@ -28,7 +28,7 @@
           <tr> <td>Tag</td> <td>Count</td> </tr>
         </thead>
         <tbody>
-          {% for offender in ioservice.offenders.values %}
+          {% for offender in ioservice.offenders %}
           <tr> <td>{{ offender.tag }}</td> <td>{{ offender.count }}</td> </tr>
           {% endfor %}
         </tbody>
@@ -36,7 +36,7 @@
     </div>
   </div>
 
-  {% for iostrand in ioservice.strands.values %}
+  {% for iostrand in ioservice.strands %}
     <div class="row">
       <div class="span11 offset1"><h5>{{ iostrand.name }}</h5></div>
     </div>
@@ -62,7 +62,7 @@
             <tr> <td>Tag</td> <td>Count</td> </tr>
           </thead>
           <tbody>
-            {% for offender in iostrand.offenders.values %}
+            {% for offender in iostrand.offenders %}
             <tr> <td>{{ offender.tag }}</td> <td>{{ offender.count }}</td> </tr>
             {% endfor %}
           </tbody>

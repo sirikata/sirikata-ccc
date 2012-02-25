@@ -34,13 +34,15 @@ def run_node_command(node, command_name, command_body=None, raw=False):
     if command_body:
         command_body = json.dumps(command_body)
 
+    error = False
     try:
         r = requests.post('http://' + node.address + '/' + command_name, data=command_body)
         response = r.text
     except requests.exceptions.RequestException as e:
         response = 'Error issuing command to node: ' + str(e)
+        error = True
 
-    if not raw:
+    if not raw and not error:
         response = json.loads(response)
 
     return response
@@ -67,7 +69,7 @@ def node_objects(request, node_id):
 
     objects = []
     if 'objects' in response:
-        objects = response['objects'].keys()
+        objects = response['objects']
 
     render_params = {
         'node' : node,
