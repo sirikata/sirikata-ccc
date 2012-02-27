@@ -6,6 +6,8 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
 
+    url(r'^$', 'views.index', name='index'),
+
     url(r'^nodes/', include('nodes.urls')),
 
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
