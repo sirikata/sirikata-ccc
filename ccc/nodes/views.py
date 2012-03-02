@@ -72,6 +72,30 @@ def node_command_raw(request, node_id, command_name):
         )
 
 
+def node_list_commands(request, node_id):
+    '''Get a list of commands that this node supports and display them
+    with links to execute them and get the raw result. Note that
+    commands that require additional data will just fail with these
+    links.
+    '''
+    node = get_object_or_404(Node, pk=node_id)
+
+    response = run_node_command(node, 'meta.commands')
+    commands = []
+    if 'commands' in response:
+        commands = [c for c in response['commands']]
+        commands.sort()
+
+    render_params = {
+        'commands' : commands,
+        'node' : node
+        }
+    return render_to_response(
+        'commands.html', render_params,
+        context_instance=RequestContext(request)
+        )
+
+
 def node_objects(request, node_id):
     node = get_object_or_404(Node, pk=node_id)
 

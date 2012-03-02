@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<div class="row">
+  <div class="span12">
+    <h3>All Commands</h3>
+  </div>
+</div>
+{% for command in commands %}
+<div class="row">
+  <div class="span12">
+    <a href="{% url nodes.views.node_command_raw node.id command %}">{{ command }}</a>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock main_content %}
