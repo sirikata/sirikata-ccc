@@ -43,7 +43,11 @@ def run_node_command(node, command_name, command_body=None, raw=False):
         error = True
 
     if not raw and not error:
-        response = json.loads(response)
+        # Try to parse, but fallback to original value if we can't
+        try:
+            response = json.loads(response)
+        except ValueError:
+            pass
 
     return response
 
@@ -52,6 +56,12 @@ def node_command_raw(request, node_id, command_name):
     node = get_object_or_404(Node, pk=node_id)
 
     response = run_node_command(node, command_name, raw=True)
+    # Reformat if we get back json
+    try:
+        resp_json = json.loads(response)
+        response = json.dumps(resp_json, indent=2)
+    except ValueError:
+        pass
 
     render_params = {
         'response' : response
