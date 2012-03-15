@@ -123,6 +123,26 @@ def node_disconnect_object(request, node_id, obj_id):
     return redirect('ccc-nodes-node-objects', node_id=node_id)
 
 
+
+def node_transfer_requests(request, node_id):
+    node = get_object_or_404(Node, pk=node_id)
+
+    response = run_node_command(node, "transfer.mediator.requests.list")
+
+    requests = []
+    if 'requests' in response:
+        requests = response['requests']
+
+    render_params = {
+        'node' : node,
+        'requests' : requests
+        }
+    return render_to_response(
+        'transfer_requests.html', render_params,
+        context_instance=RequestContext(request)
+        )
+
+
 def node_debug(request, node_id):
     '''
     List various debug info collected from the node.

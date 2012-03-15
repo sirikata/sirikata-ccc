@@ -18,6 +18,8 @@ urlpatterns = patterns(
     url(r'^node/(?P<node_id>\d+)/objects/$', 'nodes.views.node_objects', name='ccc-nodes-node-objects'),
     url(r'^node/(?P<node_id>\d+)/objects/disconnect/(?P<obj_id>(\d|\w|-)+)$', 'nodes.views.node_disconnect_object', name='ccc-nodes-node-objects-disconnect'),
 
+    url(r'^node/(?P<node_id>\d+)/transfer/requests$', 'nodes.views.node_transfer_requests', name='ccc-nodes-node-transfer-requests'),
+
     url(r'^node/(?P<node_id>\d+)/debug/$', 'nodes.views.node_debug', name='ccc-nodes-node-debug'),
 
     url(r'^group/(?P<group_id>\d+)/$', 'nodes.views.group', name='ccc-nodes-group-index'),
