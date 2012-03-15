@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<div class="alert alert-error alert-block">
+  <h2 class="alert-heading">{{ error_title|default:"Error" }}</h2>
+  <br>
+
+  {% if message %}
+  <h4>{{ message }}</h4>
+  {% endif %}
+
+</div>
+
+{% endblock main_content %}
