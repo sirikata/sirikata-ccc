@@ -1,0 +1,50 @@
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
+    <script>
+      TO_QUERY = "{% url nodes.views.node_download_planner_downloads_raw_json node.id %}";
+    </script>
+    
+    <script type="text/javascript" src="{{ STATIC_URL }}/js/d3.v2.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}/js/downloadPlanner.js"></script>
+
+  </head>
+
+  <body>
+    <button id="getMoreDataButton">
+      Click to get more data
+    </button>
+
+
+    <div id="selectDiffs">
+      <br/>
+      Enter number corresponding to data downloaded, and then
+      click "Show diff".<br/>
+      
+      Initial <input type="text" id="initial" value=""/> <br/>
+      Compare to <input type="text" id="compareTo" value=""> <br/>
+      <button id="diffButton">
+        Show diff
+      </button>
+    </div>
+
+    <div id="selectDataDiv">
+      <br/>
+      <br/>
+    </div>
+
+    
+    <div id="dataDispDiv">
+    </div>
+    
+    
+    <script>
+      onReady();
+    </script>
+    
+  </body>
+</html>
+

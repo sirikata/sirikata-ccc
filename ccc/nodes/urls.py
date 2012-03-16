@@ -20,8 +20,16 @@ urlpatterns = patterns(
 
     url(r'^node/(?P<node_id>\d+)/transfer/requests$', 'nodes.views.node_transfer_requests', name='ccc-nodes-node-transfer-requests'),
 
-    url(r'^node/(?P<node_id>\d+)/debug/$', 'nodes.views.node_debug', name='ccc-nodes-node-debug'),
+    
+    url(r'^node/(?P<node_id>\d+)/downloadPlanner/downloads$', 'nodes.views.node_download_planner_downloads', name='ccc-nodes-node-download-planner-downloads'),
 
+    url(r'^node/(?P<node_id>\d+)/downloadPlanner/downloads_raw_json$', 'nodes.views.node_download_planner_downloads_raw_json', name='ccc-nodes-node-download-planner-downloads-raw-json'),
+
+    
+    url(r'^node/(?P<node_id>\d+)/debug/$', 'nodes.views.node_debug', name='ccc-nodes-node-debug'),
+    
     url(r'^group/(?P<group_id>\d+)/$', 'nodes.views.group', name='ccc-nodes-group-index'),
+
+
 
 )
