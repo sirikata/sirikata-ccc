@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
+from django.http import HttpResponse
 from nodes.models import Node, NodeGroup
 import requests
 import json
@@ -46,6 +47,7 @@ def run_node_command(node, command_name, command_body=None, raw=False):
         # Try to parse, but fallback to original value if we can't
         try:
             response = json.loads(response)
+            if 'error' in response: error = response['error']
         except ValueError:
             pass
 
@@ -68,7 +70,7 @@ def node_command_raw(request, node_id, command_name):
     node = get_object_or_404(Node, pk=node_id)
 
     response, error = run_node_command(node, command_name, raw=True)
-    if not response: return failed_command(request, error)
+    if error: return failed_command(request, error)
 
     # Reformat if we get back json
     try:
@@ -95,7 +97,7 @@ def node_list_commands(request, node_id):
     node = get_object_or_404(Node, pk=node_id)
 
     response, error = run_node_command(node, 'meta.commands')
-    if not response: return failed_command(request, error)
+    if error: return failed_command(request, error)
 
     commands = []
     if 'commands' in response:
@@ -116,7 +118,7 @@ def node_objects(request, node_id):
     node = get_object_or_404(Node, pk=node_id)
 
     response, error = run_node_command(node, "space.server.objects.list")
-    if not response: return failed_command(request, error)
+    if error: return failed_command(request, error)
 
     objects = []
     if 'objects' in response:
@@ -135,7 +137,7 @@ def node_disconnect_object(request, node_id, obj_id):
     node = get_object_or_404(Node, pk=node_id)
 
     response, error = run_node_command(node, "space.server.objects.disconnect", { 'object' : obj_id })
-    if not response: return failed_command(request, error)
+    if error: return failed_command(request, error)
 
     # Use a notification to indicate success after redirect?
     return redirect('ccc-nodes-node-objects', node_id=node_id)
@@ -146,7 +148,7 @@ def node_transfer_requests(request, node_id):
     node = get_object_or_404(Node, pk=node_id)
 
     response, error = run_node_command(node, "transfer.mediator.requests.list")
-    if not response: return failed_command(request, error)
+    if error: return failed_command(request, error)
 
     requests = []
     if 'requests' in response:
@@ -162,6 +164,72 @@ def node_transfer_requests(request, node_id):
         )
 
 
+# Proximity
+def node_prox_overview(request, node_id):
+    node = get_object_or_404(Node, pk=node_id)
+
+    props, error = run_node_command(node, "space.prox.properties")
+    if error: return failed_command(request, error)
+
+    handlers, error = run_node_command(node, "space.prox.handlers")
+    if error: return failed_command(request, error)
+    if not 'handlers' in handlers: failed_command(request, "Couldn't retrieve list of handlers from node.")
+    handlers = handlers['handlers']
+    # Rework the handlers data into a more usable state for the template
+    new_handlers = []
+    for querier in handlers:
+        for queried in handlers[querier]:
+            handler = handlers[querier][queried]
+            handler['querier_type'] = querier
+            handler['queried_type'] = queried
+            new_handlers.append(handler)
+
+    render_params = {
+        'node' : node,
+        'properties' : props,
+        'handlers' : new_handlers
+        }
+    return render_to_response(
+        'prox_overview.html', render_params,
+        context_instance=RequestContext(request)
+        )
+
+def node_prox_handler(request, node_id, handler_name):
+    node = get_object_or_404(Node, pk=node_id)
+
+    render_params = {
+        'node' : node,
+        'handler' : handler_name
+        }
+    return render_to_response(
+        'prox_handler_vis.html', render_params,
+        context_instance=RequestContext(request)
+        )
+
+def node_prox_handler_nodes(request, node_id, handler_name):
+    '''Get raw nodes data as JSON'''
+    node = get_object_or_404(Node, pk=node_id)
+
+    response, error = run_node_command(node, "space.prox.nodes", { 'handler' : handler_name } )
+    if error:
+        return HttpResponse(json.dumps({"error" : error}, indent=2), mimetype="application/json")
+    if not 'nodes' in response:
+        return HttpResponse(json.dumps({"error" : "No nodes listed in response"}, indent=2), mimetype="application/json")
+
+    return HttpResponse(json.dumps(response['nodes'], indent=2), mimetype="application/json")
+
+
+
+def node_prox_handler_rebuild(request, node_id, handler_name):
+    node = get_object_or_404(Node, pk=node_id)
+
+    response, error = run_node_command(node, "space.prox.rebuild", { 'handler' : handler_name } )
+    if error: return failed_command(request, error)
+
+    # If there's no error, just redirect to overview page
+    return redirect('ccc-nodes-node-prox-overview', node_id=node_id)
+
+
 def node_debug(request, node_id):
     '''
     List various debug info collected from the node.
@@ -169,7 +237,7 @@ def node_debug(request, node_id):
     node = get_object_or_404(Node, pk=node_id)
 
     context_stats, error = run_node_command(node, "context.report-all-stats")
-    if not response: return failed_command(request, error)
+    if error: return failed_command(request, error)
 
     render_params = {
         'node' : node,

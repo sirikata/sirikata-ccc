@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<div id="chart"></div>
+
+<style>
+.node circle {
+  fill: lightsteelblue;
+  stroke: lightsteelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+</style>
+
+<script type="text/javascript">
+var data_url = "{% url nodes.views.node_prox_handler_nodes node.id handler %}";
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}nodes/js/prox_handler_tree_vis.js"></script>
+
+{% endblock main_content %}

@@ -17,8 +17,14 @@ urlpatterns = patterns(
     # Objects on a given node
     url(r'^node/(?P<node_id>\d+)/objects/$', 'nodes.views.node_objects', name='ccc-nodes-node-objects'),
     url(r'^node/(?P<node_id>\d+)/objects/disconnect/(?P<obj_id>(\d|\w|-)+)$', 'nodes.views.node_disconnect_object', name='ccc-nodes-node-objects-disconnect'),
-
+    # Transfer requests
     url(r'^node/(?P<node_id>\d+)/transfer/requests$', 'nodes.views.node_transfer_requests', name='ccc-nodes-node-transfer-requests'),
+
+    # Proximity
+    url(r'^node/(?P<node_id>\d+)/prox/$', 'nodes.views.node_prox_overview', name='ccc-nodes-node-prox-overview'),
+    url(r'^node/(?P<node_id>\d+)/prox/(?P<handler_name>(\w|\.|-)+)/$', 'nodes.views.node_prox_handler', name='ccc-nodes-node-prox-handler'),
+    url(r'^node/(?P<node_id>\d+)/prox/(?P<handler_name>(\w|\.|-)+)/nodes$', 'nodes.views.node_prox_handler_nodes', name='ccc-nodes-node-prox-handler-nodes'),
+    url(r'^node/(?P<node_id>\d+)/prox/(?P<handler_name>(\w|\.|-)+)/rebuild/$', 'nodes.views.node_prox_handler_rebuild', name='ccc-nodes-node-prox-handler-rebuild'),
 
     url(r'^node/(?P<node_id>\d+)/debug/$', 'nodes.views.node_debug', name='ccc-nodes-node-debug'),
 
