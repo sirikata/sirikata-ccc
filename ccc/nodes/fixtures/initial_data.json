@@ -1,0 +1,18 @@
+[
+    {
+        "model": "nodes.nodetype",
+        "pk": 1,
+        "fields": {
+            "short" : "space",
+            "name" : "Space Server"
+        }
+    },
+    {
+        "model": "nodes.nodetype",
+        "pk": 2,
+        "fields": {
+            "short" : "oh",
+            "name" : "Object host"
+        }
+    }
+]
