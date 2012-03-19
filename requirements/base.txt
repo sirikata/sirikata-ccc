@@ -5,3 +5,6 @@ docutils==0.8.1
 
 # Requests - simpler http requests, for interacting with nodes
 requests==0.10.2
+
+# South - database/model migrations
+South==0.7.3
