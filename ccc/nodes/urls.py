@@ -26,8 +26,15 @@ urlpatterns = patterns(
     url(r'^node/(?P<node_id>\d+)/prox/(?P<handler_name>(\w|\.|-)+)/nodes$', 'nodes.views.node_prox_handler_nodes', name='ccc-nodes-node-prox-handler-nodes'),
     url(r'^node/(?P<node_id>\d+)/prox/(?P<handler_name>(\w|\.|-)+)/rebuild/$', 'nodes.views.node_prox_handler_rebuild', name='ccc-nodes-node-prox-handler-rebuild'),
 
+
+    url(r'^node/(?P<node_id>\d+)/downloadPlanner/downloads$', 'nodes.views.node_download_planner_downloads', name='ccc-nodes-node-download-planner-downloads'),
+    url(r'^node/(?P<node_id>\d+)/downloadPlanner/downloads_raw_json$', 'nodes.views.node_download_planner_downloads_raw_json', name='ccc-nodes-node-download-planner-downloads-raw-json'),
+
+
     url(r'^node/(?P<node_id>\d+)/debug/$', 'nodes.views.node_debug', name='ccc-nodes-node-debug'),
 
     url(r'^group/(?P<group_id>\d+)/$', 'nodes.views.group', name='ccc-nodes-group-index'),
+
+
 
 )

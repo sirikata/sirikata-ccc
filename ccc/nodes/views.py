@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.http import HttpResponse
 from nodes.models import Node, NodeGroup
+from django.http import HttpResponse
 import requests
 import json
 
@@ -228,6 +229,30 @@ def node_prox_handler_rebuild(request, node_id, handler_name):
 
     # If there's no error, just redirect to overview page
     return redirect('ccc-nodes-node-prox-overview', node_id=node_id)
+
+
+
+
+def node_download_planner_downloads(request,node_id):
+    node = get_object_or_404(Node, pk=node_id)
+    response, error = run_node_command(node, "oh.ogre.ddplanner")
+    if not response: return failed_command(request, error)
+
+    render_params = {
+        'node' : node,
+        'newData' : response
+        }
+    return render_to_response(
+        'download_planner.html', render_params,
+        context_instance=RequestContext(request)
+        )
+
+def node_download_planner_downloads_raw_json(request,node_id):
+    node = get_object_or_404(Node, pk=node_id)
+    response, error = run_node_command(node, "oh.ogre.ddplanner")
+    if not response: return failed_command(request, error)
+    return HttpResponse(content =json.dumps(response),mimetype='application/json');
+
 
 
 def node_debug(request, node_id):
