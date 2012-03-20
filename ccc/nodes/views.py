@@ -169,10 +169,14 @@ def node_transfer_requests(request, node_id):
 def node_prox_overview(request, node_id):
     node = get_object_or_404(Node, pk=node_id)
 
-    props, error = run_node_command(node, "space.prox.properties")
+    if not node.nodetype:
+        return failed_command(request, "Don't know what type of node this is. You need to set it's node type.")
+    prefix = node.nodetype.short
+
+    props, error = run_node_command(node, prefix + ".prox.properties")
     if error: return failed_command(request, error)
 
-    handlers, error = run_node_command(node, "space.prox.handlers")
+    handlers, error = run_node_command(node, prefix + ".prox.handlers")
     if error: return failed_command(request, error)
     if not 'handlers' in handlers: failed_command(request, "Couldn't retrieve list of handlers from node.")
     handlers = handlers['handlers']
@@ -211,7 +215,11 @@ def node_prox_handler_nodes(request, node_id, handler_name):
     '''Get raw nodes data as JSON'''
     node = get_object_or_404(Node, pk=node_id)
 
-    response, error = run_node_command(node, "space.prox.nodes", { 'handler' : handler_name } )
+    if not node.nodetype:
+        return failed_command(request, "Don't know what type of node this is. You need to set it's node type.")
+    prefix = node.nodetype.short
+
+    response, error = run_node_command(node, prefix + ".prox.nodes", { 'handler' : handler_name } )
     if error:
         return HttpResponse(json.dumps({"error" : error}, indent=2), mimetype="application/json")
     if not 'nodes' in response:
@@ -224,7 +232,11 @@ def node_prox_handler_nodes(request, node_id, handler_name):
 def node_prox_handler_rebuild(request, node_id, handler_name):
     node = get_object_or_404(Node, pk=node_id)
 
-    response, error = run_node_command(node, "space.prox.rebuild", { 'handler' : handler_name } )
+    if not node.nodetype:
+        return failed_command(request, "Don't know what type of node this is. You need to set it's node type.")
+    prefix = node.nodetype.short
+
+    response, error = run_node_command(node, prefix + ".prox.rebuild", { 'handler' : handler_name } )
     if error: return failed_command(request, error)
 
     # If there's no error, just redirect to overview page

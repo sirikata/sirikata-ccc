@@ -22,9 +22,9 @@ urlpatterns = patterns(
 
     # Proximity
     url(r'^node/(?P<node_id>\d+)/prox/$', 'nodes.views.node_prox_overview', name='ccc-nodes-node-prox-overview'),
-    url(r'^node/(?P<node_id>\d+)/prox/(?P<handler_name>(\w|\.|-)+)/$', 'nodes.views.node_prox_handler', name='ccc-nodes-node-prox-handler'),
-    url(r'^node/(?P<node_id>\d+)/prox/(?P<handler_name>(\w|\.|-)+)/nodes$', 'nodes.views.node_prox_handler_nodes', name='ccc-nodes-node-prox-handler-nodes'),
-    url(r'^node/(?P<node_id>\d+)/prox/(?P<handler_name>(\w|\.|-)+)/rebuild/$', 'nodes.views.node_prox_handler_rebuild', name='ccc-nodes-node-prox-handler-rebuild'),
+    url(r'^node/(?P<node_id>\d+)/prox/(?P<handler_name>(\w|\.|-|:)+)/$', 'nodes.views.node_prox_handler', name='ccc-nodes-node-prox-handler'),
+    url(r'^node/(?P<node_id>\d+)/prox/(?P<handler_name>(\w|\.|-|:)+)/nodes$', 'nodes.views.node_prox_handler_nodes', name='ccc-nodes-node-prox-handler-nodes'),
+    url(r'^node/(?P<node_id>\d+)/prox/(?P<handler_name>(\w|\.|-|:)+)/rebuild/$', 'nodes.views.node_prox_handler_rebuild', name='ccc-nodes-node-prox-handler-rebuild'),
 
 
     url(r'^node/(?P<node_id>\d+)/downloadPlanner/downloads$', 'nodes.views.node_download_planner_downloads', name='ccc-nodes-node-download-planner-downloads'),
