@@ -14,6 +14,39 @@
   </head>
 
   <body>
+    <h3> Description</h3>
+
+    <h4> Collecting data</h4>
+    <p>
+    To grab data from the server, click the button "Click to get more data".  Note that for large scenes (proximity sets > 1000 objects), the oh may take time returning data, and you should not re-click this button.  Eventually, the data will appear under the "Data" header with a timestamp of when the data was received.  (The time is relative to when you initially started the page.)  You can click
+    on the data to draw it into columns on the screen.  The next sections describe the layout of these data.
+    </p>
+    
+    <h4> Left column </h4>
+    <p>
+      The left column displays objects within prox query (both aggregate and non-aggregate).  The left-most number displayed is the first 7 digits of the object's identifier.  The next number shown indicates the priority the object is assigned (0-1).  The left column is sorted by this number.  The color of the object (orange or red) indicates whether the user wants to load the object into the
+    scene or not.  To conserve browser memory, we don't draw all objects in the viewer's proximity set.  (The specific cutoff is indicated in text below.)  In general, most objects drawn will therefore be orange because the visualization cutoff is less than the viewer's cutoff for maximum number of objects drawn.  
+    </p>
+
+    <h4> Right column </h4>
+    <p>
+      The right column displays assets with the asset url written in text next to a large circle.  Assets are the visual data that need to be downloaded to represent an object (dae files, textures, etc.).  More than one object can point to an asset (if you have multiple objects with the same mesh), but an object will point to only one asset.  (Note some assets have a line segment coming out of
+      them that does not point to an object displayed in the browser.  In these cases, the asset points to an object, but for in-browser display purposes, we cannot draw the object.  Assets with no line segments coming out of them are not used by any object.)  The asset is colored brown if it has not completely downloaded itself and all of its dependencies.  If it has downloaded itself and all of
+      its dependencies, it will be colored blue.  Assets are sorted in two ways.  If they and their dependencies have been completely downloaded, they appear first.  This group is then ordered by the sum of priorities of objects that point to each asset.  Assets that have not been completely downloaded or whose dependencies have not been completely downloaded appear in the second group.  Like the
+      first group, this group is also ordered by the sum of all the priorities of objects that point to them.
+    </p>
+    <p>
+      The circles that appear below each asset represent the outstanding (brown) and completed (blue) dependency downloads of each asset.  (If no brown circle is drawn, that means all data has been downloaded for the asset.)  If you view data on the top layer, clicking on each of these circles indicates the outstanding downloads.
+    </p>
+
+    
+    <h4> Diffs </h4>
+    <p>
+      To view diffs between collected data traces, enter the data's id (number in bold next to "click here to display data ..." statement) into "initial" and "compare to" text boxes and hit compare.  The view will show you all objects that were added (green with +-s in front of them) and removed (red with --s in front of them) as well as asset changes (loaded and removed).  
+    </p>
+
+    <hr>
+    <h3> Controls </h3>
     <button id="getMoreDataButton">
       Click to get more data
     </button>
@@ -31,12 +64,12 @@
       </button>
     </div>
 
+    <hr>
+    <h3> Data </h3>
     <div id="selectDataDiv">
-      <br/>
-      <br/>
     </div>
 
-    
+
     <div id="dataDispDiv">
     </div>
     

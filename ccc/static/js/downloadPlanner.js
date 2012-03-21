@@ -25,9 +25,11 @@ NEWLY_LOADED_ASSET_COLOR = 'blue';
 ADDED_ASSET_COLOR = 'green';
 REMOVED_ASSET_COLOR = 'red';
 
+MAX_NUM_ASSETS = 500;
+MAX_NUM_OBJECTS = 400;
+
 HEIGHT = 28000;
 WIDTH  = 3000;
-
 
 
 LOADED_ASSET_PRIORITY = 100;
@@ -74,6 +76,9 @@ function onReady()
             if (diffObject !== null)
                 diffObject.blank();
 
+            for (var s in allDataVec)
+                allDataVec[s].blank();
+            
             diffObject = upperData.diff(lowerData);
             diffObject.printSummary(svg);
         });
@@ -134,11 +139,31 @@ function SingleRunData(allData,svg)
 
 
     var sortedObjects = preConditionObjects(loadedObjects,waitingObjects);
+    this.numObjects = sortedObjects.length;
+    sortedObjects = sortedObjects.slice(0,MAX_NUM_OBJECTS);    
+    
+    
     this.objIdsToObjects = drawObjects(
         svg,sortedObjects,LOADED_OBJECT_COLOR,WAITING_OBJECT_COLOR);
 
     //now draw assets
-    var sortedAssets = sortAssets(assets);
+    var sortedAssets = sortAssets(assets,this.objIdsToObjects);
+    this.numAssets = sortedAssets.length;
+    sortedAssets = sortedAssets.slice(0,MAX_NUM_ASSETS);
+
+
+    
+    var headerTextString = this.numObjects.toString() + ' total objects; ';
+    headerTextString += this.numAssets.toString() + ' total assets.  ';
+    headerTextString += '  Only drawing ' + MAX_NUM_OBJECTS.toString() + ' objects, and ';
+    headerTextString += MAX_NUM_ASSETS.toString() + ' assets.';
+    this.headerText = svg.append('text')
+        .attr("x", 0 )
+        .attr("y", 15)
+        .text(headerTextString);
+
+    
+    
     this.assetIdsToAssets = drawAssets(
         svg,sortedAssets,LOADED_ASSETS_COLOR,
         WAITING_ASSETS_COLOR,this.objIdsToObjects);
@@ -152,6 +177,8 @@ function SingleRunData(allData,svg)
 
 SingleRunData.prototype.blank = function()
 {
+    this.headerText.style('opacity',0);
+    
     for (var s in this.assetIdsToAssets)
         this.assetIdsToAssets[s].blank();
     for (var t in this.objIdsToObjects)
@@ -160,6 +187,7 @@ SingleRunData.prototype.blank = function()
 
 SingleRunData.prototype.drawData = function()
 {
+    this.headerText.style('opacity',1);
     for (var s in this.assetIdsToAssets)
         this.assetIdsToAssets[s].drawData();
     for (var t in this.objIdsToObjects)
@@ -352,20 +380,22 @@ function drawAssets(svg,sortedAssets,loadedColor,waitingColor,objIdsToObjects)
             .attr("fill", isLoaded ? loadedColor : waitingColor);
 
 
-
         //print priority text
-        var priorityTextString = 'LOADED';
-        if (sortedAssets[s].priority != LOADED_ASSET_PRIORITY)
-            priorityTextString = sortedAssets[s].priority.toString().substring(0,7);
+        var priorityTextString =sortedAssets[s].priority.toString().substring(0,7);
+        if (sortedAssets[s].priority >= LOADED_ASSET_PRIORITY)
+        {
+            priorityTextString = 'LOADED ' +
+                priorityStringFormat((sortedAssets[s].priority - LOADED_ASSET_PRIORITY).toString());
+        }
+
         var priorityText = svg.append('text')
             .attr("x", LEFT_COLUMN_START_X + 500)
             .attr("y", LEFT_COLUMN_START_Y + numInRightColumn*CIRCLE_PADDING + 5)
             .text(priorityTextString);
 
 
-
         var text = svg.append('text')
-            .attr("x", LEFT_COLUMN_START_X + 590)
+            .attr("x", LEFT_COLUMN_START_X + 650)
             .attr("y", LEFT_COLUMN_START_Y + numInRightColumn*CIRCLE_PADDING + 5)
             .text(sortedAssets[s].name);
         
@@ -389,7 +419,11 @@ function drawAssets(svg,sortedAssets,loadedColor,waitingColor,objIdsToObjects)
                      {
                          return function()
                          {
-                             alert('I do not do anything right now.');
+                             toDownloadText = 'got into click';
+                             for (var t in sortedAssets[s].loadingResources)
+                                 toDownloadText += sortedAssets[s].loadingResources[t] + '\n';
+                             
+                             alert(toDownloadText);
                          };
                      })(s));
 
@@ -544,8 +578,20 @@ Asset.prototype.drawLines = function()
     for (var s in this.objIds)
     {
         var objId = this.objIds[s];
-        var endCircleX = this.objIdsToObjects[objId].circle.attr('cx');
-        var endCircleY = this.objIdsToObjects[objId].circle.attr('cy');
+
+        var endCircleX = null;
+        var endCircleY = null;
+        if (objId in this.objIdsToObjects)
+        {
+            endCircleX = this.objIdsToObjects[objId].circle.attr('cx');
+            endCircleY = this.objIdsToObjects[objId].circle.attr('cy');
+        }
+        if (endCircleX === null)
+        {
+            endCircleX = circleX - 30;
+            endCircleY = circleY;
+        }
+        
 
         var line = this.svg.append('svg:line')
             .attr('x1',circleX)
@@ -591,14 +637,39 @@ Asset.prototype.select = function()
  priorities with something large so that they appear at the
  beginning of the sorted array.
  */
-function sortAssets(allAssets)
+function sortAssets(allAssets,objIdMap)
 {
     
     var toReturn = [];
     for (var s in allAssets)
     {
         if (allAssets[s].priority == -1)
+        {
             allAssets[s].priority = LOADED_ASSET_PRIORITY;
+            var addition = 0;
+            for (var t in allAssets[s].usingObjects)
+            {
+                var index = objId(allAssets[s].usingObjects[t]);
+                if (index in objIdMap)
+                {
+                    var matchObj = objIdMap[index];
+                    addition += matchObj.priority;
+                }
+            }
+
+            for (var t in allAssets[s].waitingObjects)
+            {
+                var index = objId(allAssets[s].watingObjects[t]);
+                if (index in objIdMap)
+                {
+                    var matchObj = objIdMap[objId(allAssets[s].waitingObjects[t])];
+                    addition += matchObj.priority;                        
+                }
+            }
+
+            allAssets[s].priority += addition;
+        }
+
         toReturn.push(
             allAssets[s]);
     }
