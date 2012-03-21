@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<div class="row">
+  <div class="span8">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <td>Name</td>
+          <td>Querier Type</td>
+          <td>Queried Objects</td>
+          <td>Objects</td>
+          <td>Nodes</td>
+          <td>Queries</td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        {% for handler in handlers %}
+        <tr>
+          <td><a href="{% url nodes.views.node_prox_handler node.id handler.name %}">{{ handler.name }}</a></td>
+          <td>{{ handler.querier_type }}</td>
+          <td>{{ handler.queried_type }}</td>
+          <td>{{ handler.objects }}</td>
+          <td>{{ handler.nodes }}</td>
+          <td>{{ handler.queries }}</td>
+          <td><a class="btn btn-warning" href="{% url nodes.views.node_prox_handler_rebuild node.id handler.name %}">Rebuild</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock main_content %}
