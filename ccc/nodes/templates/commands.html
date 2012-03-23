@@ -11,6 +11,7 @@
 <div class="row">
   <div class="span12">
     <a href="{% url nodes.views.node_command_raw node.id command %}">{{ command }}</a>
+    <a href="{% url nodes.views.node_command_raw node.id command %}?format=json">[json]</a>
   </div>
 </div>
 {% endfor %}

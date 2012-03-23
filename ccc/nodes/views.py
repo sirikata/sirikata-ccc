@@ -80,6 +80,12 @@ def node_command_raw(request, node_id, command_name):
     except ValueError:
         pass
 
+    # Special case formats
+    if 'format' in request.GET:
+        if request.GET['format'] == 'json':
+            return HttpResponse(response, mimetype="application/json")
+
+    # Default is a page with the given info
     render_params = {
         'response' : response
         }
