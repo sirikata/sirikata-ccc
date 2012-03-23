@@ -38,7 +38,7 @@ def run_node_command(node, command_name, command_body=None, raw=False):
 
     error = None
     try:
-        r = requests.post('http://' + node.address + '/' + command_name, data=command_body)
+        r = requests.post('http://' + node.address + '/' + command_name, data=command_body, timeout=5)
         response = r.text
     except requests.exceptions.RequestException as e:
         error = str(e)
