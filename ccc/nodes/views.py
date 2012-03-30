@@ -124,7 +124,12 @@ def node_list_commands(request, node_id):
 def node_objects(request, node_id):
     node = get_object_or_404(Node, pk=node_id)
 
-    response, error = run_node_command(node, "space.server.objects.list")
+    if not node.nodetype:
+        return failed_command(request, "Don't know what type of node this is. You need to set it's node type.")
+    prefix = node.nodetype.short
+
+    if prefix == 'space': prefix = 'space.server'
+    response, error = run_node_command(node, prefix + ".objects.list")
     if error: return failed_command(request, error)
 
     objects = []
@@ -143,7 +148,16 @@ def node_objects(request, node_id):
 def node_disconnect_object(request, node_id, obj_id):
     node = get_object_or_404(Node, pk=node_id)
 
-    response, error = run_node_command(node, "space.server.objects.disconnect", { 'object' : obj_id })
+    if not node.nodetype:
+        return failed_command(request, "Don't know what type of node this is. You need to set it's node type.")
+
+    cmd = ''
+    if node.nodetype.short == 'space':
+        cmd = 'space.server.objects.disconnect'
+    elif node.nodetype.short == 'oh':
+        cmd = 'oh.objects.destroy'
+
+    response, error = run_node_command(node, cmd, { 'object' : obj_id })
     if error: return failed_command(request, error)
 
     # Use a notification to indicate success after redirect?
