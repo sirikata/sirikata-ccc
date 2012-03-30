@@ -16,7 +16,9 @@ urlpatterns = patterns(
 
     # Objects on a given node
     url(r'^node/(?P<node_id>\d+)/objects/$', 'nodes.views.node_objects', name='ccc-nodes-node-objects'),
+    url(r'^node/(?P<node_id>\d+)/objects/(?P<obj_id>(\d|\w|-)+)/presences$', 'nodes.views.node_object_presences', name='ccc-nodes-node-objects-presences'),
     url(r'^node/(?P<node_id>\d+)/objects/disconnect/(?P<obj_id>(\d|\w|-)+)$', 'nodes.views.node_disconnect_object', name='ccc-nodes-node-objects-disconnect'),
+
     # Transfer requests
     url(r'^node/(?P<node_id>\d+)/transfer/requests$', 'nodes.views.node_transfer_requests', name='ccc-nodes-node-transfer-requests'),
 

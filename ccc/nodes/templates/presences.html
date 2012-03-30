@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<div class="row">
+{{ object }}'s Presences
+</div>
+<div class="row">
+  <div class="span4">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <td>ID</td>
+          <td>Mesh</td>
+          <td>Physics</td>
+          <td># Proxies</td>
+          <td># Active Proxies</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% for presence in presences %}
+        <tr>
+          <td>{{ presence.id }}</td>
+          <td>{{ presence.mesh }}</td>
+          <td>{{ presence.physics }}</td>
+          <td>{{ presence.proxies.alive }}</td>
+          <td>{{ presence.proxies.active }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock main_content %}

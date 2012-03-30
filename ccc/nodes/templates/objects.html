@@ -11,7 +11,15 @@
       <tbody>
         {% for object in objects %}
         <tr>
-          <td>{{ object }}</td>
+          <td>
+            {% if with_presences %}
+            <a href="{% url nodes.views.node_object_presences node.id object %}">
+            {% endif %}
+              {{ object }}
+            {% if with_presences %}
+            </a>
+            {% endif %}
+          </td>
           <td><a class="btn btn-danger" href="{% url nodes.views.node_disconnect_object node.id object %}">Disconnect</a></td>
         </tr>
         {% endfor %}

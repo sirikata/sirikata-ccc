@@ -138,12 +138,41 @@ def node_objects(request, node_id):
 
     render_params = {
         'node' : node,
-        'objects' : objects
+        'objects' : objects,
+        'with_presences' : (node.nodetype.short == 'oh')
         }
     return render_to_response(
         'objects.html', render_params,
         context_instance=RequestContext(request)
         )
+
+
+def node_object_presences(request, node_id, obj_id):
+    node = get_object_or_404(Node, pk=node_id)
+
+    if not node.nodetype:
+        return failed_command(request, "Don't know what type of node this is. You need to set it's node type.")
+    if node.nodetype.short != 'oh':
+        return failed_command(request, "Can only list presences of an object on an object host.")
+
+    response, error = run_node_command(node, 'oh.objects.presences', { 'object' : obj_id })
+    if error: return failed_command(request, error)
+
+    presences = []
+    for (id,pres) in response['presences'].iteritems():
+        pres['id'] = id
+        presences.append(pres)
+
+    render_params = {
+        'node' : node,
+        'object' : obj_id,
+        'presences' : presences
+        }
+    return render_to_response(
+        'presences.html', render_params,
+        context_instance=RequestContext(request)
+        )
+
 
 def node_disconnect_object(request, node_id, obj_id):
     node = get_object_or_404(Node, pk=node_id)
