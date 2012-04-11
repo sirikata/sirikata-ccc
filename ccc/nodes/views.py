@@ -325,6 +325,9 @@ def node_debug(request, node_id):
     context_stats, error = run_node_command(node, "context.report-all-stats")
     if error: return failed_command(request, error)
 
+    context_stats['ioservices'] = sorted(context_stats['ioservices'], key=lambda x: x['name'])
+    for serv in context_stats['ioservices']:
+        serv['strands'] = sorted(serv['strands'], key=lambda x: x['name'])
     render_params = {
         'node' : node,
         'context_stats' : context_stats
