@@ -17,7 +17,7 @@ var vis = d3.select("#chart").append("svg")
   .append("g")
     .attr("transform", "translate(0, 50)");
 
-var duration = 500;
+var duration = 500, short_duration = 100;
 var refresh_time = 1000;
 
 // We need to carefully handle the layout of our data for d3 in order
@@ -227,7 +227,7 @@ var update_data = function () {
                       .attr("class", "info-overlay")
                       .text(function(d) { return d.id + '  ' + bounds_str(d); })
                       .style("opacity", 0)
-                      .transition().duration(duration)
+                      .transition().duration(short_duration)
                       .style("opacity", 1)
                   ;
               })
@@ -238,7 +238,7 @@ var update_data = function () {
                       .style("fill", "lightsteelblue")
                       .style("stroke", "lightsteelblue");
                   g.selectAll(".info-overlay")
-                      .transition().duration(duration)
+                      .transition().duration(short_duration)
                       .style("opacity", 0);
 //                      .remove();
               })
