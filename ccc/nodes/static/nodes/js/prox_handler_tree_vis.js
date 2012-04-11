@@ -2,7 +2,12 @@ var w = 960,
     h = 800;
 
 var tree = d3.layout.tree()
-    .size([w-100, h-160]);
+    .size([w-100, h-160])
+    .sort(
+        function(a,b) {
+            return d3.ascending(a.id, b.id);
+        }
+    );
 
 var diagonal = d3.svg.diagonal();
 
