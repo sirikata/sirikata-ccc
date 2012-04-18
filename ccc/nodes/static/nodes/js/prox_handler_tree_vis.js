@@ -20,6 +20,49 @@ var vis = d3.select("#chart").append("svg")
 var duration = 500, short_duration = 100;
 var refresh_time = 1000;
 
+
+// Selection settings, methods, and initial setup
+var selected_node = undefined;
+
+var setSelection = function(v) {
+    selected_node = v;
+    if (selected_node === undefined) {
+        $('#disconnect-button').attr('disabled', 'true');
+    }
+    else {
+        $('#disconnect-button').removeAttr('disabled');
+    }
+};
+
+var node_color = function(d, hover) {
+    if (hover) {
+        return "orange";
+    }
+    else {
+        if (d.id == selected_node)
+            return "red";
+        else
+            return "lightsteelblue";
+    }
+};
+
+$(document).ready(
+    function() {
+        // Disable selection when clicking on something besides
+        $('body').click(function() { setSelection(undefined); });
+        //$('#chart').click(function() { setSelection(undefined); });
+        // Disconnect button
+        $('#disconnect-button').click(
+            function() {
+                $.ajax(disconnect_url.replace("OBJID", selected_node));
+            }
+        );
+        // Initialize selection to get UI right
+        setSelection();
+    }
+);
+
+
 // We need to carefully handle the layout of our data for d3 in order
 // to properly handle changes to the tree. We want to make sure we
 // keep nodes with the same identifiers associated with each other. We
@@ -155,6 +198,38 @@ var bounds_str = function(d) {
     return 'c = (' + d.bounds.center.x + ', ' + d.bounds.center.y + ', ' + d.bounds.center.z + '), r = ' + d.bounds.radius;
 };
 
+var node_hover_func = function(d, i) {
+    var g = d3.select(this);
+    g.selectAll("circle")
+        .transition().duration(duration)
+        .style("fill", node_color(d, true))
+        .style("stroke", node_color(d, true));
+    g.append("text")
+        .attr("class", "info-overlay")
+        .text(function(d) { return d.id + '  ' + bounds_str(d); })
+        .style("opacity", 0)
+        .transition().duration(short_duration)
+        .style("opacity", 1)
+    ;
+};
+
+var node_unhover_func = function(d, i) {
+    var g = d3.select(this);
+    g.selectAll("circle")
+        .transition().duration(duration)
+        .style("fill", node_color(d, false))
+        .style("stroke", node_color(d, false));
+    g.selectAll(".info-overlay")
+        .transition().duration(short_duration)
+        .style("opacity", 0)
+        .remove();
+};
+
+var node_click_func = function(d, i) {
+    setSelection(d.id);
+    d3.event.stopPropagation();
+};
+
 var update_data = function () {
   d3.json(
       data_url,
@@ -217,31 +292,9 @@ var update_data = function () {
           new_node
               .attr("class", "node")
               .attr("transform", translate_to_existing_ancestor_prev_position)
-              .on("mouseover", function(d, i) {
-                  var g = d3.select(this);
-                  g.selectAll("circle")
-                      .transition().duration(duration)
-                      .style("fill", "orange")
-                      .style("stroke", "orange");
-                  g.append("text")
-                      .attr("class", "info-overlay")
-                      .text(function(d) { return d.id + '  ' + bounds_str(d); })
-                      .style("opacity", 0)
-                      .transition().duration(short_duration)
-                      .style("opacity", 1)
-                  ;
-              })
-              .on("mouseout", function(d, i) {
-                  var g = d3.select(this);
-                  g.selectAll("circle")
-                      .transition().duration(duration)
-                      .style("fill", "lightsteelblue")
-                      .style("stroke", "lightsteelblue");
-                  g.selectAll(".info-overlay")
-                      .transition().duration(short_duration)
-                      .style("opacity", 0);
-//                      .remove();
-              })
+              .on("mouseover", node_hover_func)
+              .on("mouseout", node_unhover_func)
+              .on("click", node_click_func)
               .transition().duration(duration)
               .attr("transform", translate_to_my_target_position);
           // And each gets a circle

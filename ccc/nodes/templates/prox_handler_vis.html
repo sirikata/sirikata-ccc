@@ -24,7 +24,10 @@
 
 <script type="text/javascript">
 var data_url = "{% url nodes.views.node_prox_handler_nodes node.id handler %}";
+var disconnect_url = "{% url nodes.views.node_disconnect_object node.id "OBJID" %}";
 </script>
 <script type="text/javascript" src="{{ STATIC_URL }}nodes/js/prox_handler_tree_vis.js"></script>
+
+<input id="disconnect-button" class="btn btn-danger" type="button" value="Disconnect">
 
 {% endblock main_content %}
