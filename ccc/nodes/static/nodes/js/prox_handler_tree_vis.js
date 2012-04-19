@@ -34,16 +34,21 @@ var setSelection = function(v) {
     }
 };
 
-var node_color = function(d, hover) {
-    if (hover) {
+var node_color_interpolator = d3.interpolateRgb("lightsteelblue", "green");
+var node_cut_scale = d3.scale.linear().domain([0, 2]);
+var node_color = function(d, i) {
+    // A bunch of special cases
+    if (d.hovering)
         return "orange";
-    }
-    else {
-        if (d.id == selected_node)
-            return "red";
-        else
-            return "lightsteelblue";
-    }
+
+    if (d.id == selected_node)
+        return "red";
+
+    if (d.cuts === undefined)
+        return "lightsteelblue";
+
+    // And then choose color based on number of cuts
+    return node_color_interpolator(node_cut_scale(d.cuts));
 };
 
 $(document).ready(
@@ -194,35 +199,36 @@ var translate_to_last_valid_ancestor_position = function(d) {
     return "translate(" + target.x + "," + target.y + ")";
 };
 
+var vec3_str = function(v) {
+    return '(' + v.x + ', ' + v.y + ', ' + v.z + ')';
+};
 var bounds_str = function(d) {
-    return 'c = (' + d.bounds.center.x + ', ' + d.bounds.center.y + ', ' + d.bounds.center.z + '), r = ' + d.bounds.radius;
+    return 'c = ' + vec3_str(d.bounds.center) + ', r = ' + d.bounds.radius;
 };
 
+var node_color_func = function(v) {
+    v.transition().duration(duration)
+        .style("fill", node_color)
+        .style("stroke", node_color);
+};
 var node_hover_func = function(d, i) {
     var g = d3.select(this);
     g.selectAll("circle")
-        .transition().duration(duration)
-        .style("fill", node_color(d, true))
-        .style("stroke", node_color(d, true));
-    g.append("text")
-        .attr("class", "info-overlay")
-        .text(function(d) { return d.id + '  ' + bounds_str(d); })
-        .style("opacity", 0)
-        .transition().duration(short_duration)
-        .style("opacity", 1)
-    ;
+        .each( function(d,i) { d.hovering = true; } )
+        .call(node_color_func);
+    $('#selected-node-id').text(d.id);
+    $('#selected-node-center').text(vec3_str(d.bounds.center));
+    $('#selected-node-radius').text(d.bounds.radius);
+    $('#selected-node-cuts').text(d.cuts);
 };
 
 var node_unhover_func = function(d, i) {
     var g = d3.select(this);
     g.selectAll("circle")
+        .each( function(d,i) { delete d.hovering; } )
         .transition().duration(duration)
-        .style("fill", node_color(d, false))
-        .style("stroke", node_color(d, false));
-    g.selectAll(".info-overlay")
-        .transition().duration(short_duration)
-        .style("opacity", 0)
-        .remove();
+        .style("fill", node_color(d))
+        .style("stroke", node_color(d));
 };
 
 var node_click_func = function(d, i) {
@@ -301,7 +307,8 @@ var update_data = function () {
           new_node.append("circle")
               .attr("r", 0)
               .transition().duration(duration)
-              .attr("r", 5);
+              .attr("r", 5)
+              .call(node_color_func);
 
           // All nodes transition into their new position
           node
