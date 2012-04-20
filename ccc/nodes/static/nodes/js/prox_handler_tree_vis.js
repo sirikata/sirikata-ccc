@@ -94,6 +94,7 @@ var update_tree = function (new_data) {
             node = nodes_by_id[x.id];
             // Update the existing nodes basic data
             node.bounds = x.bounds;
+            node.cuts = x.cuts;
             node.parent = x.parent;
             // Children get cleared out. They'll be filled back in below.
             node.children = [];
@@ -207,7 +208,7 @@ var bounds_str = function(d) {
 };
 
 var node_color_func = function(v) {
-    v.transition().duration(duration)
+    v
         .style("fill", node_color)
         .style("stroke", node_color);
 };
@@ -307,13 +308,14 @@ var update_data = function () {
           new_node.append("circle")
               .attr("r", 0)
               .transition().duration(duration)
-              .attr("r", 5)
-              .call(node_color_func);
+              .attr("r", 5);
 
-          // All nodes transition into their new position
+          // All nodes transition into their new position, color
           node
               .transition().duration(duration)
               .attr("transform", translate_to_my_target_position);
+          node.selectAll("circle")
+              .call(node_color_func);
 
           // Exiting nodes shrink their circles, moving into the
           // nearest valid ancestors. This makes subtrees shrink/fade
