@@ -348,3 +348,18 @@ def group(request, group_id):
         'group.html', render_params,
         context_instance=RequestContext(request)
         )
+
+
+
+# Loc
+def node_loc_object_properties(request, node_id, obj_id):
+    '''Get object properties from LocationService as JSON'''
+    node = get_object_or_404(Node, pk=node_id)
+
+    response, error = run_node_command(node, 'space.loc.object', { 'object' : obj_id } )
+    if error:
+        return HttpResponse(json.dumps({"error" : error}, indent=2), mimetype="application/json")
+    if not 'properties' in response:
+        return HttpResponse(json.dumps({"error" : "No properties listed in response"}, indent=2), mimetype="application/json")
+
+    return HttpResponse(json.dumps(response['properties'], indent=2), mimetype="application/json")

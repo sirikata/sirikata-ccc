@@ -25,17 +25,25 @@
 <script type="text/javascript">
 var data_url = "{% url nodes.views.node_prox_handler_nodes node.id handler %}";
 var disconnect_url = "{% url nodes.views.node_disconnect_object node.id "OBJID" %}";
+var object_properties_url = "{% url nodes.views.node_loc_object_properties node.id "OBJID" %}";
 </script>
 <script type="text/javascript" src="{{ STATIC_URL }}nodes/js/prox_handler_tree_vis.js"></script>
 
 <div class="row">
-  <div class="span4">
+  <div class="span8">
     <table class="table table-bordered">
       <tbody>
         <tr><td>ID</td><td id="selected-node-id"></td></tr>
         <tr><td>Center</td><td id="selected-node-center"></td></tr>
         <tr><td>Radius</td><td id="selected-node-radius"></td></tr>
         <tr><td># Cuts</td><td id="selected-node-cuts"></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr><td>Position</td><td id="selected-node-pos"></td></tr>
+        <tr><td>Velocity</td><td id="selected-node-vel"></td></tr>
+        <tr><td>Orientation</td><td id="selected-node-orient"></td></tr>
+        <tr><td>Rotational Velocity</td><td id="selected-node-orient-vel"></td></tr>
+        <tr><td>Mesh</td><td id="selected-node-mesh"></td></tr>
+        <tr><td>Physics</td><td id="selected-node-physics"></td></tr>
       </tbody>
     </table>
   </div>

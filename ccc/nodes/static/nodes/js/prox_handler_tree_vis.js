@@ -206,6 +206,9 @@ var vec3_str = function(v) {
 var bounds_str = function(d) {
     return 'c = ' + vec3_str(d.bounds.center) + ', r = ' + d.bounds.radius;
 };
+var quat_str = function(q) {
+    return '(' + q.x + ', ' + q.y + ', ' + q.z + ', ' + q.w + ')';
+};
 
 var node_color_func = function(v) {
     v
@@ -221,6 +224,30 @@ var node_hover_func = function(d, i) {
     $('#selected-node-center').text(vec3_str(d.bounds.center));
     $('#selected-node-radius').text(d.bounds.radius);
     $('#selected-node-cuts').text(d.cuts);
+
+    $('#selected-node-pos').text('...');
+    $('#selected-node-vel').text('...');
+    $('#selected-node-orient').text('...');
+    $('#selected-node-orient-vel').text('...');
+    $('#selected-node-mesh').text('...');
+    $('#selected-node-physics').text('...');
+
+    $.getJSON(object_properties_url.replace("OBJID", d.id))
+        .success(
+            function(data) {
+                if (data.error) return;
+                $('#selected-node-pos').text(vec3_str(data.location.position));
+                $('#selected-node-vel').text(vec3_str(data.location.velocity));
+                $('#selected-node-orient').text(quat_str(data.orientation.position));
+                $('#selected-node-orient-vel').text(quat_str(data.orientation.velocity));
+                $('#selected-node-mesh').text(data.mesh);
+                $('#selected-node-physics').text(data.physics);
+            }
+        )
+        .error(
+            function() {
+            }
+        );
 };
 
 var node_unhover_func = function(d, i) {
