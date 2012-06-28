@@ -14,5 +14,21 @@
             "short" : "oh",
             "name" : "Object host"
         }
+    },
+    {
+        "model": "nodes.nodetype",
+        "pk": 3,
+        "fields": {
+            "short" : "pinto",
+            "name" : "Pinto Top-Level Server"
+        }
+    },
+    {
+        "model": "nodes.nodetype",
+        "pk": 4,
+        "fields": {
+            "short" : "cseg",
+            "name" : "CSeg Partitioning Server"
+        }
     }
 ]
