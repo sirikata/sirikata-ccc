@@ -103,8 +103,9 @@ var update_tree = function (new_data) {
             node = x;
             node.fresh = true;
         }
-        if (!node.parent || node.parent ==
-            '00000000-0000-0000-0000-000000000000') {
+        if (!node.parent ||
+            node.parent == '00000000-0000-0000-0000-000000000000' ||
+            node.parent == '0') {
             delete node.parent;
             new_roots.push(node);
         }
