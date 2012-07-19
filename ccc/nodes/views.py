@@ -363,3 +363,37 @@ def node_loc_object_properties(request, node_id, obj_id):
         return HttpResponse(json.dumps({"error" : "No properties listed in response"}, indent=2), mimetype="application/json")
 
     return HttpResponse(json.dumps(response['properties'], indent=2), mimetype="application/json")
+
+
+def node_loc_overview(request, node_id):
+    node = get_object_or_404(Node, pk=node_id)
+
+    if not node.nodetype:
+        return failed_command(request, "Don't know what type of node this is. You need to set it's node type.")
+    prefix = node.nodetype.short
+
+    props, error = run_node_command(node, prefix + ".loc.properties")
+    if error: return failed_command(request, error)
+    if 'objects' not in props: return failed_command(request, "Didn't get properties overview from node.")
+    counts = props['objects']
+    if 'count' not in counts or \
+            'local_count' not in counts or \
+            'aggregate_count' not in counts or \
+            'local_aggregate_count' not in counts:
+        return failed_command(request, "Didn't get expected set of properties from node.")
+
+    # Based on basic set of stats, compute the rest
+    counts['individual_count'] = counts['count'] - counts['aggregate_count']
+    counts['local_individual_count'] = counts['local_count'] - counts['local_aggregate_count']
+    counts['remote_count'] = counts['count'] - counts['local_count']
+    counts['remote_individual_count'] = counts['individual_count'] - counts['local_individual_count']
+    counts['remote_aggregate_count'] = counts['aggregate_count'] - counts['local_aggregate_count']
+
+    render_params = {
+        'node' : node,
+        'properties' : props
+        }
+    return render_to_response(
+        'loc_overview.html', render_params,
+        context_instance=RequestContext(request)
+        )

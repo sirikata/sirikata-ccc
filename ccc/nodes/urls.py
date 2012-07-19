@@ -38,6 +38,7 @@ urlpatterns = patterns(
     url(r'^group/(?P<group_id>\d+)/$', 'nodes.views.group', name='ccc-nodes-group-index'),
 
     # Loc
+    url(r'^node/(?P<node_id>\d+)/loc/$', 'nodes.views.node_loc_overview', name='ccc-nodes-node-loc-overview'),
     url(r'^node/(?P<node_id>\d+)/loc/object/(?P<obj_id>(\d|\w|-)+)$', 'nodes.views.node_loc_object_properties', name='ccc-nodes-node-loc-object-properties'),
 
 )

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<div class="row">
+  <div class="span8">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <td colspan="2">Property</td>
+          <td>Value</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="2">Type</td>
+          <td>{{ properties.name }}</td>
+        </tr>
+
+
+        <tr>
+          <td colspan="2"># Total</td>
+          <td>{{ properties.objects.count }}</td>
+        </tr>
+
+        <tr>
+          <td rowspan="3">Local</td>
+          <td>Total</td>
+          <td>{{ properties.objects.local_count }}</td>
+        </tr>
+        <tr>
+          <td>Individual</td>
+          <td>{{ properties.objects.local_individual_count }}</td>
+        </tr>
+        <tr>
+          <td>Aggregates</td>
+          <td>{{ properties.objects.local_aggregate_count }}</td>
+        </tr>
+
+        <tr>
+          <td rowspan="3">Remote</td>
+          <td>Total</td>
+          <td>{{ properties.objects.remote_count }}</td>
+        </tr>
+        <tr>
+          <td>Individual</td>
+          <td>{{ properties.objects.remote_individual_count }}</td>
+        </tr>
+        <tr>
+          <td>Aggregates</td>
+          <td>{{ properties.objects.remote_aggregate_count }}</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock main_content %}
