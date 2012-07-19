@@ -8,6 +8,7 @@
       <thead>
         <tr>
           <td>Name</td>
+          <td>Local Index ID</td>
           <td>Querier Type</td>
           <td>Queried Objects</td>
           <td>Nodes</td>
@@ -20,6 +21,7 @@
         {% for handler in handlers %}
         <tr>
           <td><a href="{% url nodes.views.node_prox_handler node.id handler.name %}">{{ handler.name }}</a></td>
+          <td>{{ handler.indexid|default_if_none:"" }}</td>
           <td>{{ handler.querier_type }}</td>
           <td>{{ handler.queried_type }}</td>
           <td>{{ handler.nodes }}</td>
