@@ -241,6 +241,8 @@ var node_hover_func = function(d, i) {
                 $('#selected-node-vel').text(vec3_str(data.location.velocity));
                 $('#selected-node-orient').text(quat_str(data.orientation.position));
                 $('#selected-node-orient-vel').text(quat_str(data.orientation.velocity));
+                $('#selected-node-loc-bounds-center').text(vec3_str(data.bounds.center));
+                $('#selected-node-loc-bounds-radius').text((data.bounds.radius));
                 $('#selected-node-mesh').text(data.mesh);
                 $('#selected-node-physics').text(data.physics);
             }
