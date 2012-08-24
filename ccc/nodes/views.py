@@ -38,7 +38,7 @@ def run_node_command(node, command_name, command_body=None, raw=False):
 
     error = None
     try:
-        r = requests.post('http://' + node.address + '/' + command_name, data=command_body, timeout=5)
+        r = requests.post('http://' + node.address + '/' + command_name, data=command_body, timeout=30)
         response = r.text
     except requests.exceptions.RequestException as e:
         error = str(e)
@@ -395,5 +395,27 @@ def node_loc_overview(request, node_id):
         }
     return render_to_response(
         'loc_overview.html', render_params,
+        context_instance=RequestContext(request)
+        )
+
+
+
+def node_aggmgr_stats(request, node_id):
+    node = get_object_or_404(Node, pk=node_id)
+
+    props, error = run_node_command(node, "space.aggregates.stats")
+    if error: return failed_command(request, error)
+    if 'stats' not in props: return failed_command(request, "Didn't get statistics from node.")
+    stats = props['stats']
+
+    # Compute some derived stats
+    stats['waiting_for_generation'] = stats['queued'] - (stats['generated'] + stats['generation_failed'])
+    stats['waiting_for_upload'] = stats['generated'] - (stats['uploaded'] + stats['upload_failed'])
+    render_params = {
+        'node' : node,
+        'stats' : stats
+        }
+    return render_to_response(
+        'aggmgr_stats.html', render_params,
         context_instance=RequestContext(request)
         )

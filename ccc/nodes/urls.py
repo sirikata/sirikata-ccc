@@ -41,4 +41,6 @@ urlpatterns = patterns(
     url(r'^node/(?P<node_id>\d+)/loc/$', 'nodes.views.node_loc_overview', name='ccc-nodes-node-loc-overview'),
     url(r'^node/(?P<node_id>\d+)/loc/object/(?P<obj_id>(\d|\w|-)+)$', 'nodes.views.node_loc_object_properties', name='ccc-nodes-node-loc-object-properties'),
 
+    # Aggregation
+    url(r'^node/(?P<node_id>\d+)/aggmgr/$', 'nodes.views.node_aggmgr_stats', name='ccc-nodes-node-aggmgr-stats'),
 )

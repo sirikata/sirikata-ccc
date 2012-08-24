@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<div class="row">
+  <div class="span8">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <td>Property</td>
+          <td>Value</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Raw Updates</td>
+          <td>{{ stats.raw_updates }}</td>
+        </tr>
+
+        <tr>
+          <td>Total Queued</td>
+          <td>{{ stats.queued }}</td>
+        </tr>
+
+        <tr>
+          <td>Queued for Generation</td>
+          <td>{{ stats.waiting_for_generation }}</td>
+        </tr>
+
+        <tr>
+          <td>Generated Successfully</td>
+          <td>{{ stats.generated }}</td>
+        </tr>
+
+        <tr>
+          <td>Generation Failed</td>
+          <td>{{ stats.generation_failed }}</td>
+        </tr>
+
+        <tr>
+          <td>Queued for Upload</td>
+          <td>{{ stats.waiting_for_upload }}</td>
+        </tr>
+
+        <tr>
+          <td>Uploaded Successfully</td>
+          <td>{{ stats.uploaded }}</td>
+        </tr>
+
+        <tr>
+          <td>Upload Failed</td>
+          <td>{{ stats.upload_failed }}</td>
+        </tr>
+
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock main_content %}
