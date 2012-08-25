@@ -37,6 +37,16 @@
           <td>{{ stats.generation_failed }}</td>
         </tr>
 
+       <tr>
+          <td>Upload Failed</td>
+          <td>{{ stats.upload_failed }}</td>
+       </tr>
+
+        <tr>
+          <td>Cumulative Generation Time</td>
+          <td>{{ stats.cumulative_generation_time }}</td>
+        </tr>
+
         <tr>
           <td>Queued for Upload</td>
           <td>{{ stats.waiting_for_upload }}</td>
@@ -52,6 +62,15 @@
           <td>{{ stats.upload_failed }}</td>
         </tr>
 
+        <tr>
+          <td>Cumulative Upload Time</td>
+          <td>{{ stats.cumulative_upload_time }}</td>
+        </tr>
+
+        <tr>
+          <td>Cumulative Aggregate Size</td>
+          <td>{{ stats.cumulative_size }} bytes</td>
+        </tr>
 
       </tbody>
     </table>
