@@ -36,6 +36,7 @@ urlpatterns = patterns(
     url(r'^node/(?P<node_id>\d+)/debug/$', 'nodes.views.node_debug', name='ccc-nodes-node-debug'),
 
     url(r'^group/(?P<group_id>\d+)/$', 'nodes.views.group', name='ccc-nodes-group-index'),
+    url(r'^group/(?P<group_id>\d+)/delete$', 'nodes.views.group_delete', name='ccc-nodes-group-delete'),
 
     # Loc
     url(r'^node/(?P<node_id>\d+)/loc/$', 'nodes.views.node_loc_overview', name='ccc-nodes-node-loc-overview'),

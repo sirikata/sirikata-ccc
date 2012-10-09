@@ -3,6 +3,7 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from nodes.models import Node, NodeGroup
 from django.http import HttpResponse
+from django.db.models import Count
 import requests
 import json
 
@@ -349,6 +350,14 @@ def group(request, group_id):
         context_instance=RequestContext(request)
         )
 
+def group_delete(request, group_id):
+    group = get_object_or_404(NodeGroup, pk=group_id)
+
+    group.node_set.annotate(group_count=Count('groups')).filter(group_count=1).delete()
+
+    group.delete()
+
+    return redirect('ccc-nodes-index')
 
 
 # Loc
