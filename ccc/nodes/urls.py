@@ -28,15 +28,12 @@ urlpatterns = patterns(
     url(r'^node/(?P<node_id>\d+)/prox/(?P<handler_name>(\w|\.|-|:)+)/nodes$', 'nodes.views.node_prox_handler_nodes', name='ccc-nodes-node-prox-handler-nodes'),
     url(r'^node/(?P<node_id>\d+)/prox/(?P<handler_name>(\w|\.|-|:)+)/rebuild/$', 'nodes.views.node_prox_handler_rebuild', name='ccc-nodes-node-prox-handler-rebuild'),
 
-
+    # Download planner
     url(r'^node/(?P<node_id>\d+)/downloadPlanner/downloads$', 'nodes.views.node_download_planner_downloads', name='ccc-nodes-node-download-planner-downloads'),
     url(r'^node/(?P<node_id>\d+)/downloadPlanner/downloads_raw_json$', 'nodes.views.node_download_planner_downloads_raw_json', name='ccc-nodes-node-download-planner-downloads-raw-json'),
 
-
+    # Debug
     url(r'^node/(?P<node_id>\d+)/debug/$', 'nodes.views.node_debug', name='ccc-nodes-node-debug'),
-
-    url(r'^group/(?P<group_id>\d+)/$', 'nodes.views.group', name='ccc-nodes-group-index'),
-    url(r'^group/(?P<group_id>\d+)/delete$', 'nodes.views.group_delete', name='ccc-nodes-group-delete'),
 
     # Loc
     url(r'^node/(?P<node_id>\d+)/loc/$', 'nodes.views.node_loc_overview', name='ccc-nodes-node-loc-overview'),
@@ -44,4 +41,11 @@ urlpatterns = patterns(
 
     # Aggregation
     url(r'^node/(?P<node_id>\d+)/aggmgr/$', 'nodes.views.node_aggmgr_stats', name='ccc-nodes-node-aggmgr-stats'),
+
+
+    # Groups
+    url(r'^group$', 'nodes.views.groups_index', name='ccc-nodes-groups'),
+    url(r'^group/(?P<group_id>\d+)/$', 'nodes.views.group', name='ccc-nodes-group-index'),
+    url(r'^group/(?P<group_id>\d+)/delete$', 'nodes.views.group_delete', name='ccc-nodes-group-delete'),
+
 )

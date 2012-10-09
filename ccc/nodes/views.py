@@ -339,6 +339,15 @@ def node_debug(request, node_id):
         )
 
 
+def groups_index(request):
+    groups = NodeGroup.objects.all().order_by('name')
+    render_params = {
+        'groups' : groups
+        }
+    return render_to_response(
+        'groups_index.html', render_params,
+        context_instance=RequestContext(request)
+        )
 
 def group(request, group_id):
     group = get_object_or_404(NodeGroup, pk=group_id)
@@ -357,7 +366,7 @@ def group_delete(request, group_id):
 
     group.delete()
 
-    return redirect('ccc-nodes-index')
+    return redirect('ccc-nodes-groups')
 
 
 # Loc
