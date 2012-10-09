@@ -1,11 +1,12 @@
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.http import HttpResponse
-from nodes.models import Node, NodeGroup
+from nodes.models import Node, NodeGroup, NodeType
 from django.http import HttpResponse
 from django.db.models import Count
 import requests
 import json
+from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
     nodes = Node.objects.all().order_by('name')
@@ -27,6 +28,17 @@ def node(request, node_id):
         context_instance=RequestContext(request)
         )
 
+@csrf_exempt
+def node_create(request):
+    params = json.loads(request.raw_post_data)
+    nodetype = NodeType.objects.get(short=params['type'])
+    node = Node.objects.create(name=params['name'], address=params['address'], nodetype=nodetype)
+    node.save()
+    for group_name in params['groups']:
+        g = NodeGroup.objects.get(name=group_name)
+        node.groups.add(g)
+    node.save()
+    return HttpResponse(json.dumps({}, indent=2), mimetype="application/json")
 
 def run_node_command(node, command_name, command_body=None, raw=False):
     '''
@@ -339,7 +351,15 @@ def node_debug(request, node_id):
         )
 
 
+@csrf_exempt
 def groups_index(request):
+    # Group creation through post
+    if request.method == "POST":
+        return group_create(request)
+    elif request.method == "DELETE":
+        return group_delete_by_name(request)
+
+    # Normal view
     groups = NodeGroup.objects.all().order_by('name')
     render_params = {
         'groups' : groups
@@ -359,13 +379,25 @@ def group(request, group_id):
         context_instance=RequestContext(request)
         )
 
+@csrf_exempt
+def group_create(request):
+    params = json.loads(request.raw_post_data)
+    group = NodeGroup.objects.create(name=params['name'])
+    group.save()
+    return HttpResponse(json.dumps({}, indent=2), mimetype="application/json")
+
+@csrf_exempt
+def group_delete_by_name(request):
+    params = json.loads(request.raw_post_data)
+    group = NodeGroup.objects.get(name=params['name'])
+    group.node_set.annotate(group_count=Count('groups')).filter(group_count=1).delete()
+    group.delete()
+    return HttpResponse()
+
 def group_delete(request, group_id):
     group = get_object_or_404(NodeGroup, pk=group_id)
-
     group.node_set.annotate(group_count=Count('groups')).filter(group_count=1).delete()
-
     group.delete()
-
     return redirect('ccc-nodes-groups')
 
 

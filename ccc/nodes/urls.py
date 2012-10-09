@@ -5,6 +5,8 @@ urlpatterns = patterns(
 
     url(r'^$', 'nodes.views.index', name='ccc-nodes-index'),
 
+    url(r'^node$', 'nodes.views.node_create', name='ccc-nodes-node'),
+
     url(r'^node/(?P<node_id>\d+)/$', 'nodes.views.node', name='ccc-nodes-node-index'),
 
     # Raw command to the node. Just requests the command_name and returns the raw result
