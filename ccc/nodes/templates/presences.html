@@ -11,6 +11,8 @@
       <thead>
         <tr>
           <td>ID</td>
+          <td>Location</td>
+          <td>Bounds</td>
           <td>Mesh</td>
           <td>Physics</td>
           <td># Proxies</td>
@@ -21,6 +23,8 @@
         {% for presence in presences %}
         <tr>
           <td>{{ presence.id }}</td>
+          <td><{{ presence.location.position.x }}, {{ presence.location.position.y }}, {{ presence.location.position.z }}> <{{ presence.location.velocity.x }}, {{ presence.location.velocity.y }}, {{ presence.location.velocity.z }}> {{ presence.location.time }}</td>
+          <td><{{ presence.bounds.center.x }}, {{ presence.bounds.center.y }}, {{ presence.bounds.center.z }}> {{ presence.bounds.radius }}</td>
           <td>{{ presence.mesh }}</td>
           <td>{{ presence.physics }}</td>
           <td>{{ presence.proxies.alive }}</td>
